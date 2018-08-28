@@ -1,0 +1,86 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>Vehicles</h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+		<li><a href="#">Vehicles</a></li>
+	</ol>
+	<!-- Main content -->
+	<div class="content">
+		<div class="row" *ngIf="_errorMessage">
+			<div class="alert alert-danger alert-dismissible">
+				<button type="button" class="close" aria-hidden="true"  (click)="hideErrorMessage()">×</button>
+				{{_errorMessage}}
+			</div>
+		</div>
+		<div class="row" *ngIf="_successMessage">
+			<div class="alert alert-success alert-dismissible">
+				<button type="button" class="close" aria-hidden="true"  (click)="hideSuccessMessage()">×</button>
+				{{_successMessage}}
+			</div>
+		</div>
+		<div class="row">
+			<!-- Primary Box -->
+			<div class="box box-primary" data-widget="box-widget">
+				<div class="box-header with-border">
+					<div class="box-tools pull-right">
+						<a class="btn btn-sm" [routerLink]="['/vehicle/vehicle', 'create']" routerLinkActive="active">Add New</a>
+					</div>
+				</div>
+				<div class="box-body"  style="margin-top:30px">
+					<div class="col-md-12" id="vehicle-details">
+						<div class="table-responsive">
+							<table id="data-table" class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th>Sr No.</th>
+										<th>Vehicle No.</th>
+										<th>Vehicle Company</th>
+										<th>Vehicle Model</th>
+										<th>Option</th>
+									</tr>
+									<tr class="search-input-dt">
+										<td><input type="hidden"></td>
+										<td><input type="text" name="" class="form-control search_init" placeholder="Search By No."></td>
+										<td><input type="text" name="" class="form-control search_init" placeholder="Search By Company Name"></td>
+										<td><input type="text" name="" class="form-control search_init" placeholder="Search By Model Name"></td>
+										<td><input type="hidden"></td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let _model of _models">
+										<td class="text-xs-center">
+											<!--  -->
+										</td>
+										<td class="text-xs-center">
+											{{_model.v_no}}
+										</td>
+										<td>
+											{{_model.company.vehicle_company}}
+										</td>
+										<td>
+											{{_model.model.model}}
+										</td>
+										<td class="text-xs-center">
+											<button class="btn btn-info btn-xs" type="button" (click)="update(_model)">
+												Edit
+											</button>
+											<button *appRoles="['Superadmin', 'Admin']" class="btn btn-danger btn-xs" type="button" (click)="delete(_model)">
+												Remove
+											</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+                </div>
+                <div class="overlay" *ngIf="_loading">
+					<i class="fa fa-refresh fa-spin"></i>
+				</div>
+			</div>
+			<!-- Primary Box -->
+		</div>
+	</div>
+	<!-- End Main content -->
+</section>

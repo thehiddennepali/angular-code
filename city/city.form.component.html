@@ -1,0 +1,153 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1  *ngIf="_mode == 'create'">
+		Add City
+	</h1>
+	<h1  *ngIf="_mode == 'update'">
+		Update {{_model.city_name}}
+	</h1>
+	<ol class="breadcrumb">
+		<li><a [routerLink]="['/']"><i class="fa fa-dashboard"></i> Home</a></li>
+		<li><a [routerLink]="['/vehicle/city']">Cities</a></li>
+		<li class="active">
+			<div *ngIf="_mode == 'create';then create else update"></div>
+			<ng-template #create>Add City</ng-template>
+			<ng-template #update>Update City - {{_model.city_name}}</ng-template>
+		</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<div class="row" *ngIf="_errorMessage">
+		<div class="alert alert-danger alert-dismissible">
+			<button type="button" class="close" aria-hidden="true"  (click)="hideErrorMessage()">×</button>
+			{{_errorMessage}}
+		</div>
+	</div>
+	<div class="row" *ngIf="_successMessage">
+		<div class="alert alert-success alert-dismissible">
+			<button type="button" class="close" aria-hidden="true"  (click)="hideSuccessMessage()">×</button>
+			{{_successMessage}}
+		</div>
+	</div>
+	<div class="animated fadeIn" *ngIf="!_mode && !_errorMessage">
+		<span class="spinner"></span>
+	</div>
+	<div class="row">
+		<!-- Primary Box -->
+		<div class="box box-primary" data-widget="box-widget">
+			<!-- Box Header -->
+            <div class="box-header with-border">
+				<div class="box-tools pull-right">
+					<a [routerLink]="['/vehicle/city']" class="btn">List View</a>
+				</div>
+			</div>
+			<div class="box-body">
+				<div class="col-md-offset-1 col-md-10" *ngIf="_mode">
+					<form class="form-horizontal" [formGroup]="_form" (ngSubmit)="onSubmit()">
+						<div class="row">
+							<div class="col-md-6 form-group" [ngClass]="{'has-danger': !_isValid('state_id')}">
+								<label class="control-label col-sm-4" for="state_id">State <span class="required">*</span></label>
+								<div class="col-sm-8">
+									<select class="form-control" id="state_id" [formControl]="_form.controls['state_id']" [ngClass]="{'form-control-danger': !_isValid('state_id')}" [(ngModel)]="_model.state_id">
+										<option *ngFor="let state_item of _states" value="{{state_item.Id}}">{{state_item.state_name}}</option>
+									</select>
+									<div *ngIf="!_formErrors.state_id.valid">
+										<span class="help-block help-block-error">{{_formErrors.state_id.message}}</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6 form-group" [ngClass]="{'has-danger': !_isValid('city_name')}">
+								<label class="control-label col-sm-4" for="city_name">City Name <span class="required">*</span></label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="city_name" placeholder="Enter City Name" [formControl]="_form.controls['city_name']" [ngClass]="{'form-control-danger': !_isValid('city_name')}" [(ngModel)]="_model.city_name" />
+									<!-- client side validation -->
+									<div *ngIf="city_name.invalid && (city_name.dirty || city_name.touched)" class="help-block help-block-error">
+										<div *ngIf="city_name.errors.minlength">
+											City Name must be at least 3 characters long.
+										</div>
+										<div *ngIf="city_name.errors.maxlength">
+											City Name must be less than 50 characters.
+										</div>
+									</div>
+									<div *ngIf="!_formErrors.city_name.valid">
+										<span class="help-block help-block-error">{{_formErrors.city_name.message}}</span>
+									</div>
+									<!-- <div class="col-sm-12">
+										<p class="help-text">* Allowed characters (0-9A-Za-z-._) between 3 and 15 characters.</p>
+									</div> -->
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6 form-group" [ngClass]="{'has-danger': !_isValid('city_short_name')}">
+								<label class="control-label col-sm-4" for="city_short_name">City Short Name <span class="required">*</span></label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="city_short_name" placeholder="Enter City Short Name" [formControl]="_form.controls['city_short_name']" [ngClass]="{'form-control-danger': !_isValid('city_short_name')}" [(ngModel)]="_model.city_short_name" />
+
+									<!-- client side validation -->
+									<div *ngIf="city_short_name.invalid && (city_short_name.dirty || city_short_name.touched)" class="help-block help-block-error">
+										<div *ngIf="city_short_name.errors.minlength">
+											City Short Name must be at least 1 characters long.
+										</div>
+										<div *ngIf="city_short_name.errors.maxlength">
+											City Short Name must be less than 10 characters.
+										</div>
+									</div>
+									<div *ngIf="!_formErrors.city_short_name.valid">
+										<span class="help-block help-block-error">{{_formErrors.city_short_name.message}}</span>
+									</div>
+									<!-- <div class="col-sm-12">
+										<p class="help-text">* Allowed characters (0-9A-Za-z-._) between 3 and 15 characters.</p>
+									</div> -->
+								</div>
+							</div>
+
+							<div class="col-md-6 form-group" [ngClass]="{'has-danger': !_isValid('pincode')}">
+								<label class="control-label col-sm-4" for="pincode">Pincode <span class="required">*</span></label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="pincode" placeholder="Enter Pincode" [formControl]="_form.controls['pincode']" [ngClass]="{'form-control-danger': !_isValid('pincode')}" [(ngModel)]="_model.pincode" />
+									<div *ngIf="!_formErrors.pincode.valid">
+										<span class="help-block help-block-error">{{_formErrors.pincode.message}}</span>
+									</div>
+									<!-- <div class="col-sm-12">
+										<p class="help-text">* Allowed characters (0-9A-Za-z-._) between 3 and 15 characters.</p>
+									</div> -->
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6 form-group" [ngClass]="{'has-danger': !_isValid('std')}">
+								<label class="control-label col-sm-4" for="std">STD <span class="required">*</span></label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="std" placeholder="Enter STD" [formControl]="_form.controls['std']" [ngClass]="{'form-control-danger': !_isValid('std')}" [(ngModel)]="_model.std" />
+									<div *ngIf="!_formErrors.std.valid">
+										<span class="help-block help-block-error">{{_formErrors.std.message}}</span>
+									</div>
+									<!-- <div class="col-sm-12">
+										<p class="help-text">* Allowed characters (0-9A-Za-z-._) between 3 and 15 characters.</p>
+									</div> -->
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6 form-group">
+								<label class="control-label col-sm-4" for="pwd"></label>
+								<div class="col-sm-8">
+									<button type="submit" class="btn" [disabled]="_submitted == true">Submit</button>
+									<div *ngIf="_submitted" class="spinner"></div>
+								</div>
+								<div *ngIf="_errorMessage" class="col-xs-12 error-block mt-h">
+									<div class="alert alert-danger">{{_errorMessage}}</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

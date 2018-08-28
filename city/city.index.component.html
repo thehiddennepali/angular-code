@@ -1,0 +1,86 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>Cities</h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+		<li><a href="#">Cities</a></li>
+	</ol>
+	<!-- Main content -->
+	<div class="content">
+		<div class="row" *ngIf="_errorMessage">
+			<div class="alert alert-danger alert-dismissible">
+				<button type="button" class="close" aria-hidden="true"  (click)="hideErrorMessage()">×</button>
+				{{_errorMessage}}
+			</div>
+		</div>
+		<div class="row" *ngIf="_successMessage">
+			<div class="alert alert-success alert-dismissible">
+				<button type="button" class="close" aria-hidden="true"  (click)="hideSuccessMessage()">×</button>
+				{{_successMessage}}
+			</div>
+		</div>
+		<div class="row">
+			<!-- Primary Box -->
+			<div class="box box-primary" data-widget="box-widget">
+				<div class="box-header with-border">
+					<a class="btn pull-right" [routerLink]="['/vehicle/city', 'create']" routerLinkActive="active">Add New</a>
+				</div>
+				<div class="box-body"  style="margin-top:30px">
+					<div class="col-md-12" id="city-details">
+						<div class="table-responsive">
+							<table id="data-table" class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th>Sr No.</th>
+										<th>City Name</th>
+										<th>State Name</th>
+										<th>Option</th>
+									</tr>
+									<tr class="search-input-dt">
+										<td><input type="hidden"></td>
+										<td>
+											<input type="text" class="form-control search_init"/>
+										</td>
+										<td>
+											<input  type="text" class="form-control search_init"/>
+										</td>
+										<td><input type="hidden"></td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let city of _cities">
+										<td class="text-xs-center">
+											<!-- {{city.Id}} -->
+										</td>
+
+										<td>
+											{{city.city_name}}
+										</td>
+
+										<td>
+											{{city.state.state_name}}
+										</td>
+
+										<td class="text-xs-center">
+											<button class="btn btn-info btn-xs" type="button" (click)="update(city)">
+												Edit
+											</button>
+											<button *appRoles="['Superadmin', 'Admin']" class="btn btn-danger btn-xs" type="button" (click)="delete(city)">
+												Remove
+											</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+                </div>
+                <!-- <div class="overlay" *ngIf="_loading">
+					<i class="fa  fa-refresh fa-spin"></i>
+				</div> -->
+			</div>
+			<!-- //Primary Box -->
+		</div>
+	</div>
+</section>
+<!-- /.content -->

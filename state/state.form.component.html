@@ -1,0 +1,84 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1  *ngIf="_mode == 'create'">
+		Add State
+	</h1>
+	<h1  *ngIf="_mode == 'update'">
+		Update {{_model.state_name}}
+	</h1>
+	<ol class="breadcrumb">
+		<li><a [routerLink]="['/']"><i class="fa fa-dashboard"></i> Home</a></li>
+		<li><a [routerLink]="['/vehicle/state']">States</a></li>
+		<li class="active">
+			<div *ngIf="_mode == 'create';then create else update"></div>
+			<ng-template #create>Add State</ng-template>
+			<ng-template #update>Update State - {{_model.state_name}}</ng-template>
+		</li>
+	</ol>
+</section>
+<!-- content -->
+<section class="content">
+	<div class="content">
+		<div class="row" *ngIf="_errorMessage">
+			<div class="alert alert-danger alert-dismissible">
+				<button type="button" class="close" aria-hidden="true"  (click)="hideErrorMessage()">×</button>
+				{{_errorMessage}}
+			</div>
+		</div>
+		<div class="row" *ngIf="_successMessage">
+			<div class="alert alert-success alert-dismissible">
+				<button type="button" class="close" aria-hidden="true"  (click)="hideSuccessMessage()">×</button>
+				{{_successMessage}}
+			</div>
+		</div>
+		<div class="animated fadeIn" *ngIf="!_mode && !_errorMessage">
+			<span class="spinner"></span>
+		</div>
+		<div class="row">
+			<!-- Primary Box -->
+			<div class="box box-primary" data-widget="box-widget">
+				<!-- Box Header -->
+				<div class="box-header with-border">
+					<div class="box-tools pull-right">
+						<a [routerLink]="['/vehicle/state']" class="btn">List View</a>
+					</div>
+				</div>
+				<!-- // Box Header -->
+				<!-- Box Body -->
+				<div class="box-body">
+					<div class="col-md-offset-2 col-md-8" *ngIf="_mode">
+						<form [formGroup]="_form" (ngSubmit)="onSubmit()" class="form-horizontal" >
+
+							<div class="form-group" [ngClass]="{'has-danger': !_isValid('state_name')}">
+								<label class="control-label col-sm-3" for="">State Name</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control" id="state_name" placeholder="Enter State Name" [formControl]="_form.controls['state_name']" [ngClass]="{'form-control-danger': !_isValid('state_name')}" [(ngModel)]="_model.state_name" />
+									<div *ngIf="!_formErrors.state_name.valid">
+										<span class="help-block help-block-error">{{_formErrors.state_name.message}}</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group" [ngClass]="{'has-danger': !_isValid('state_short_name')}">
+								<label class="control-label col-sm-3" for="pwd">State Short Name</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control" id="state_short_name" placeholder="Enter State Short Name" [formControl]="_form.controls['state_short_name']" [ngClass]="{'form-control-danger': !_isValid('state_short_name')}" [(ngModel)]="_model.state_short_name" />
+									<div *ngIf="!_formErrors.state_short_name.valid">
+										<span class="help-block help-block-error">{{_formErrors.state_short_name.message}}</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-3 col-sm-10">
+									<button type="submit" class="btn">Submit</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<!-- //Box Body -->
+			</div>
+			<!-- //Primary Box -->
+		</div>
+	</div>
+</section>
+<!-- /.content -->

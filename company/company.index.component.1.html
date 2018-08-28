@@ -1,0 +1,81 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>Manage Companies</h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+		<li class="active">Companies</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<div class="row" *ngIf="_errorMessage">
+		<div class="col-sm-12">
+			<p class="alert alert-danger">{{_errorMessage}}</p>
+		</div>
+	</div>
+
+	<div class="animated fadeIn" *ngIf="!_companies && !_errorMessage">
+		<span class="spinner"></span>
+	</div>
+
+	<a class="btn btn-primary btn-sm" [routerLink]="['/vehicle/company', 'create']" routerLinkActive="active"><i class="fa fa-plus-square"></i> Create Company</a>
+
+	<div class="animated fadeIn" *ngIf="_companies">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="card">
+					<div class="card-block">
+						<div class="table-responsive">
+							<table class="table table-bordered table-striped dataTable no-footer" id="data-table">
+								<thead>
+									<tr role="row">
+										<th class="asc text-xs-center" (click)="sotrtCity(id)">ID</th>
+										<th class="asc" (click)="sotrtCity(company)">Company Name</th>
+										<th class="asc" (click)="sotrtCity(company)">Company Short Name</th>
+										<th class="asc" (click)="sotrtCity(company)">Pincode</th>
+										<th class="asc" (click)="sotrtCity(company)">Prop Name</th>
+										<th class="asc text-xs-center" width="20%">Option</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr role="row" class="odd">
+										<td class="sorting_1"></td>
+										<td><input type="text" name="" class="form-control" placeholder="Search By Company Name"></td>
+										<td><input type="text" name="" class="form-control" placeholder="Search By Company Short Name"></td>
+										<td><input type="text" name="" class="form-control" placeholder="Search By Pincode"></td>
+										<td><input type="text" name="" class="form-control" placeholder="Search By Prop Name"></td>
+										<td></td>
+									</tr>
+									<tr *ngFor="let company of _companies">
+										<td class="text-xs-center">
+											<!-- {{company.Id}} -->
+										</td>
+										<td>
+											{{company.company_name}}
+										</td>
+										<td>
+											{{company.comp_short_name}}
+										</td>
+										<td>
+											{{company.pincode}}
+										</td>
+										<td>
+											{{company.prop_name}}
+										</td>
+										<td class="text-xs-center">
+											<button class="btn btn-info btn-xs" type="button" (click)="updateCompany(company)">Edit</button>
+											<button *appRoles="['Superadmin', 'Admin']" class="btn btn-danger btn-xs" type="button" (click)="deleteCity(company)">Remove</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="card-footer">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

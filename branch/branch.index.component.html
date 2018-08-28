@@ -1,0 +1,109 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>Branch</h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+		<li><a href="#">Branch</a></li>
+	</ol>
+	<!-- Main content -->
+	<div class="content">
+		<div class="row" *ngIf="_errorMessage">
+			<div class="alert alert-danger alert-dismissible">
+				<button type="button" class="close" aria-hidden="true"  (click)="hideErrorMessage()">×</button>
+				{{_errorMessage}}
+			</div>
+		</div>
+		<div class="row" *ngIf="_successMessage">
+			<div class="alert alert-success alert-dismissible">
+				<button type="button" class="close" aria-hidden="true"  (click)="hideSuccessMessage()">×</button>
+				{{_successMessage}}
+			</div>
+		</div>
+		<div class="row">
+			<!-- Primary Box -->
+			<div class="box box-primary" data-widget="box-widget">
+				<!-- Box Header -->
+				<div class="box-header with-border">
+					<div class="box-tools pull-right">
+						<a class="btn btn-sm" [routerLink]="['/vehicle/branch', 'create']" routerLinkActive="active">Add New</a>
+					</div>
+				</div>
+				<div class="box-body"  style="margin-top:30px">
+					<div class="col-md-12" id="vehicle-details">
+						<div class="table-responsive">
+							<table id="data-table" class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th>Sr No.</th>
+										<th>Branch Name</th>
+										<th>Branch Short Name</th>
+										<th>City</th>
+										<th>State</th>
+										<th>Pincode</th>
+										<th>Option</th>
+									</tr>
+									<tr class="search-input-dt">
+										<td><input type="hidden"></td>
+										<td>
+											<input type="text" class="form-control search_init"/>
+										</td>
+										<td>
+											<input  type="text" class="form-control search_init"/>
+										</td>
+										<td>
+											<input type="text" class="form-control search_init"/>
+										</td>
+										<td>
+											<input type="text" class="form-control search_init"/>
+										</td>
+										<td>
+											<input  type="text" class="form-control search_init"/>
+										</td>
+										<td><input type="hidden"></td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let branch of _branches">
+										<td class="text-xs-center">
+											<!-- {{branch.Id}} -->
+										</td>
+										<td>
+											{{branch.branch}}
+										</td>
+										<td>
+											{{branch.branch_short_name}}
+										</td>
+										<td>
+											{{branch.city.city_name}}
+										</td>
+										<td>
+											{{branch.state.state_name}}
+										</td>
+										<td>
+											{{branch.pincode}}
+										</td>
+
+										<td class="text-xs-center">
+											<button class="btn btn-info btn-xs" type="button" (click)="update(branch)">
+												Edit
+											</button>
+											<button *appRoles="['Superadmin', 'Admin']" class="btn btn-danger btn-xs" type="button" (click)="delete(branch)">
+												Remove
+											</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- <div class="overlay" *ngIf="_loading">
+					<i class="fa fa-refresh fa-spin"></i>
+				</div> -->
+			</div>
+			<!-- //Primary Box -->
+		</div>
+	</div>
+	<!-- Main content -->
+</section>
+<!-- /.Content Header (Page header) -->

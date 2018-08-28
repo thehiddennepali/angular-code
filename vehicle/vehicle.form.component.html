@@ -1,0 +1,807 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1  *ngIf="_mode == 'create'">
+		Add Vehicle
+	</h1>
+	<h1  *ngIf="_mode == 'update'">
+		Update {{_model.v_no}}
+	</h1>
+	<ol class="breadcrumb">
+		<li><a [routerLink]="['/']"><i class="fa fa-dashboard"></i> Home</a></li>
+		<li><a [routerLink]="['/vehicle/vehicle']">Vehicles</a></li>
+		<li class="active">
+			<div *ngIf="_mode == 'create';then create else update"></div>
+			<ng-template #create>Add Vehicle</ng-template>
+			<ng-template #update>Update Vehicle - {{_model.v_no}}</ng-template>
+		</li>
+	</ol>
+</section>
+<section class="content">
+	<!-- Main content -->
+	<div class="content">
+		<div class="row" *ngIf="_errorMessage">
+			<div class="alert alert-danger alert-dismissible">
+				<button type="button" class="close" aria-hidden="true"  (click)="hideErrorMessage()">×</button>
+				{{_errorMessage}}
+			</div>
+		</div>
+		<div class="row" *ngIf="_successMessage">
+			<div class="alert alert-success alert-dismissible">
+				<button type="button" class="close" aria-hidden="true"  (click)="hideSuccessMessage()">×</button>
+				{{_successMessage}}
+			</div>
+		</div>
+		<div class="animated fadeIn" *ngIf="!_mode && !_errorMessage">
+			<span class="spinner"></span>
+		</div>
+
+		<div class="row">
+			<!-- Primary Box -->
+			<div class="box box-primary" data-widget="box-widget">
+				<!-- Panel Header -->
+				<div class="box-header with-border">
+					<div class="col-md-12">
+						<h3>Vehicle Informations</h3>
+					</div>
+					<div class="box-tools pull-right">
+						<a [routerLink]="['/vehicle']" class="btn btn-sm">List View</a>
+					</div>
+				</div>
+				<!-- Panel Body -->
+				<div class="panel-body">
+					<form [formGroup]="_form" (ngSubmit)="onSubmit()">
+						<div class="row" *ngIf="_mode" style="margin:5px;">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group" [ngClass]="{'has-danger': !_isValid('v_no')}">
+										<label for="v_no">* Vehicle No.</label>
+										<input type="text" class="form-control" id="v_no" [formControl]="_form.controls['v_no']" [ngClass]="{'form-control-danger': !_isValid('v_no')}" [(ngModel)]="_model.v_no">
+										<!-- client side validation -->
+										<div *ngIf="v_no.invalid && (v_no.dirty || v_no.touched)" class="help-block help-block-error">
+											<div *ngIf="v_no.errors.minlength">
+												Vehicle number must be at least 5 characters long.
+											</div>
+											<div *ngIf="v_no.errors.maxlength">
+												Vehicle number must be less than 50 characters.
+											</div>
+										</div>
+										<div *ngIf="!_formErrors.v_no.valid">
+											<span class="help-block help-block-error">{{_formErrors.v_no.message}}</span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="col-md-4">
+									<div class="form-group" [ngClass]="{'has-danger': !_isValid('vehicle_company_id')}">
+										<label for="exampleInputEmail1">* Vehicle Company</label>
+										<select class="form-control" id="vehicle_company_id" (change)="onCompanyChange($event)" [formControl]="_form.controls['vehicle_company_id']" [ngClass]="{'form-control-danger': !_isValid('vehicle_company_id')}" [(ngModel)]="_model.vehicle_company_id">
+											<option *ngFor="let _v_company of _v_companies" value="{{_v_company.Id}}">{{_v_company.vehicle_company}}</option>
+										</select>
+										<div *ngIf="!_formErrors.vehicle_company_id.valid">
+											<span class="help-block help-block-error">{{_formErrors.vehicle_company_id.message}}</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group" [ngClass]="{'has-danger': !_isValid('vehicle_model_id')}">
+										<label for="exampleInputEmail1">* Vehicle Model</label>
+										<select class="form-control" id="vehicle_model_id" [formControl]="_form.controls['vehicle_model_id']" [ngClass]="{'form-control-danger': !_isValid('vehicle_model_id')}" [(ngModel)]="_model.vehicle_model_id">
+											<option *ngFor="let _v_model of _v_services" value="{{_v_model.Id}}">{{_v_model.model}}</option>
+										</select>
+										<div *ngIf="!_formErrors.vehicle_model_id.valid">
+											<span class="help-block help-block-error">{{_formErrors.vehicle_model_id.message}}</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group" [ngClass]="{'has-danger': !_isValid('owner_name')}">
+										<label for="owner_name">* Vehicle Owner Name</label>
+										<input type="text" class="form-control" id="owner_name" [formControl]="_form.controls['owner_name']" [ngClass]="{'form-control-danger': !_isValid('owner_name')}" [(ngModel)]="_model.owner_name">
+										<!-- client side validation -->
+										<div *ngIf="owner_name.invalid && (owner_name.dirty || owner_name.touched)" class="help-block help-block-error">
+											<div *ngIf="owner_name.errors.minlength">
+												Owner name must be at least 5 characters long.
+											</div>
+											<div *ngIf="owner_name.errors.maxlength">
+												Owner name must be less than 100 characters.
+											</div>
+										</div>
+										<div *ngIf="!_formErrors.owner_name.valid">
+											<span class="help-block help-block-error">{{_formErrors.owner_name.message}}</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group" [ngClass]="{'has-danger': !_isValid('owner_address')}">
+										<label for="owner_address">* Owner Address</label>
+										<textarea class="form-control" id="owner_address" [formControl]="_form.controls['owner_address']" [ngClass]="{'form-control-danger': !_isValid('owner_address')}" [(ngModel)]="_model.owner_address"></textarea>
+										<!-- client side validation -->
+										<div *ngIf="owner_address.invalid && (owner_address.dirty || owner_address.touched)" class="help-block help-block-error">
+											<div *ngIf="owner_address.errors.minlength">
+												Owner address must be at least 5 characters long.
+											</div>
+											<div *ngIf="owner_address.errors.maxlength">
+												Owner address must be less than 100 characters.
+											</div>
+										</div>
+										<div *ngIf="!_formErrors.owner_address.valid">
+											<span class="help-block help-block-error">{{_formErrors.owner_address.message}}</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group" [ngClass]="{'has-danger': !_isValid('owner_pan_no')}">
+										<label for="owner_pan_no">* Owner PAN Card No.</label>
+										<input type="text" class="form-control" id="owner_pan_no" [formControl]="_form.controls['owner_pan_no']" [ngClass]="{'form-control-danger': !_isValid('owner_pan_no')}" [(ngModel)]="_model.owner_pan_no">
+										<div *ngIf="!_formErrors.owner_pan_no.valid">
+											<span class="help-block help-block-error">{{_formErrors.owner_pan_no.message}}</span>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-12">
+									<div class="row">
+										
+										
+										<div class="col-md-4">
+											<div class="form-group" [ngClass]="{'has-danger': !_isValid('gps_key')}">
+												<label for="gps_key">GPS KEY</label>
+												<input type="text" class="form-control" id="gps_key" [formControl]="_form.controls['gps_key']" [ngClass]="{'form-control-danger': !_isValid('gps_key')}" [(ngModel)]="_model.gps_key">
+												<div *ngIf="!_formErrors.gps_key.valid">
+													<span class="help-block help-block-error">{{_formErrors.gps_key.message}}</span>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group" [ngClass]="{'has-danger': !_isValid('ime_no')}">
+												<label for="ime_no">GPS IME No</label>
+												<input type="text" class="form-control" id="ime_no" [formControl]="_form.controls['ime_no']" [ngClass]="{'form-control-danger': !_isValid('ime_no')}" [(ngModel)]="_model.ime_no">
+												<div *ngIf="!_formErrors.ime_no.valid">
+													<span class="help-block help-block-error">{{_formErrors.ime_no.message}}</span>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group" [ngClass]="{'has-danger': !_isValid('gps_url')}">
+												<label for="gps_url">GPS Url</label>
+												<input type="text" class="form-control" id="gps_url" [formControl]="_form.controls['gps_url']" [ngClass]="{'form-control-danger': !_isValid('gps_url')}" [(ngModel)]="_model.gps_url">
+												<div *ngIf="!_formErrors.gps_url.valid">
+													<span class="help-block help-block-error">{{_formErrors.gps_url.message}}</span>
+												</div>
+											</div>
+										</div>
+
+										
+
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- My Tabs -->
+						<div class="my-tabs">
+							<div class="panel with-nav-tabs panel-default">
+								<div class="panel-heading">
+									<ul class="nav nav-tabs">
+										<li class="active"><a href="#tab1default" data-toggle="tab">Registration Details</a></li>
+										<li><a href="#tab2default" data-toggle="tab">Purchase Details</a></li>
+										<li><a href="#tab3default" data-toggle="tab">Chasis Details</a></li>
+										<li><a href="#tab4default" data-toggle="tab">Sale Details</a></li>
+										<li><a href="#tab5default" data-toggle="tab">Engine Details</a></li>
+										<li><a href="#tab6default" data-toggle="tab">Vehicle Documents</a></li>
+									</ul>
+								</div>
+								<div class="panel-body">
+									<div class="tab-content">
+										<!-- ===================== Tab 1 ==================== -->
+										<div class="tab-pane fade active in" id="tab1default">
+											<div class="col-md-10 col-md-offset-1">
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('make_name')}">
+															<label for="make_name">Make Name</label>
+															<input type="text" class="form-control" id="make_name" [formControl]="_form.controls['make_name']" [ngClass]="{'form-control-danger': !_isValid('make_name')}" [(ngModel)]="_model.make_name">
+															<div *ngIf="!_formErrors.make_name.valid">
+																<span class="help-block help-block-error">{{_formErrors.make_name.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('avg_mileage')}">
+															<label for="avg_mileage">Avg. Mileage</label>
+															<input type="text" class="form-control" id="avg_mileage" [formControl]="_form.controls['avg_mileage']" [ngClass]="{'form-control-danger': !_isValid('avg_mileage')}" [(ngModel)]="_model.avg_mileage">
+															<div *ngIf="!_formErrors.avg_mileage.valid">
+																<span class="help-block help-block-error">{{_formErrors.avg_mileage.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('no_of_tyres')}">
+															<label for="no_of_tyres">No Of Tyres</label>
+															<input type="text" class="form-control" id="no_of_tyres" [formControl]="_form.controls['no_of_tyres']" [ngClass]="{'form-control-danger': !_isValid('no_of_tyres')}" [(ngModel)]="_model.no_of_tyres">
+															<div *ngIf="!_formErrors.no_of_tyres.valid">
+																<span class="help-block help-block-error">{{_formErrors.no_of_tyres.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- // ROW -->
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('chasis_no')}">
+															<label for="chasis_no">Chasis No.</label>
+															<input type="text" class="form-control" id="chasis_no" [formControl]="_form.controls['chasis_no']" [ngClass]="{'form-control-danger': !_isValid('chasis_no')}" [(ngModel)]="_model.chasis_no">
+															<div *ngIf="!_formErrors.chasis_no.valid">
+																<span class="help-block help-block-error">{{_formErrors.chasis_no.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('engine_no')}">
+															<label for="engine_no">Engine No.</label>
+															<input type="text" class="form-control" id="engine_no" [formControl]="_form.controls['engine_no']" [ngClass]="{'form-control-danger': !_isValid('engine_no')}" [(ngModel)]="_model.engine_no">
+															<div *ngIf="!_formErrors.engine_no.valid">
+																<span class="help-block help-block-error">{{_formErrors.engine_no.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('manufature_year')}">
+															<label for="manufature_year">Manufacturer Year</label>
+															<input type="text" class="form-control" id="manufature_year" [formControl]="_form.controls['manufature_year']" [ngClass]="{'form-control-danger': !_isValid('manufature_year')}" [(ngModel)]="_model.manufature_year">
+															<div *ngIf="!_formErrors.manufature_year.valid">
+																<span class="help-block help-block-error">{{_formErrors.manufature_year.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- // ROW -->
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('registration_date')}">
+															<label for="registration_date">Regi. Date</label>
+															<div class="input-group">
+                                                                <input class="form-control" #datepickerRD="bsDatepicker" bsDatepicker placeholder="Select date"  formControlName="registration_date" [bsConfig]="datepickerConfig" [(ngModel)]="registration_date" (bsValueChange)="onChangeDate('registration_date', $event)"/>
+                                                                <span class="input-group-addon">
+                                                                    <a href="javascript:void(0)" (click)="datepickerRD.toggle()" [attr.aria-expanded]="datepickerRD.isOpen"><i class="fa fa-calendar-check-o"></i></a>
+                                                                </span>
+                                                            </div>
+															<div *ngIf="!_formErrors.registration_date.valid">
+																<span class="help-block help-block-error">{{_formErrors.registration_date.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('km_reading')}">
+															<label for="km_reading">KM Reading</label>
+															<input type="text" class="form-control" id="km_reading" [formControl]="_form.controls['km_reading']" [ngClass]="{'form-control-danger': !_isValid('km_reading')}" [(ngModel)]="_model.km_reading">
+															<div *ngIf="!_formErrors.km_reading.valid">
+																<span class="help-block help-block-error">{{_formErrors.km_reading.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('d_tank_capacity')}">
+															<label for="d_tank_capacity">D Tank Capacity</label>
+															<input type="text" class="form-control" id="d_tank_capacity" [formControl]="_form.controls['d_tank_capacity']" [ngClass]="{'form-control-danger': !_isValid('d_tank_capacity')}" [(ngModel)]="_model.d_tank_capacity">
+															<div *ngIf="!_formErrors.d_tank_capacity.valid">
+																<span class="help-block help-block-error">{{_formErrors.d_tank_capacity.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- // ROW -->
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('rlwl')}">
+															<label for="rlwl">RLWL (Max Wt.)</label>
+															<input type="text" class="form-control" id="rlwl" [formControl]="_form.controls['rlwl']" [ngClass]="{'form-control-danger': !_isValid('rlwl')}" [(ngModel)]="_model.rlwl">
+															<div *ngIf="!_formErrors.rlwl.valid">
+																<span class="help-block help-block-error">{{_formErrors.rlwl.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('company_mileage')}">
+															<label for="company_mileage">Company Mileage</label>
+															<input type="text" class="form-control" id="company_mileage" [formControl]="_form.controls['company_mileage']" [ngClass]="{'form-control-danger': !_isValid('company_mileage')}" [(ngModel)]="_model.company_mileage">
+															<div *ngIf="!_formErrors.company_mileage.valid">
+																<span class="help-block help-block-error">{{_formErrors.company_mileage.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('tare_weight')}">
+															<label for="tare_weight">Tare Weight</label>
+															<input type="text" class="form-control" id="tare_weight" [formControl]="_form.controls['tare_weight']" [ngClass]="{'form-control-danger': !_isValid('tare_weight')}" [(ngModel)]="_model.tare_weight">
+															<div *ngIf="!_formErrors.tare_weight.valid">
+																<span class="help-block help-block-error">{{_formErrors.tare_weight.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- ==================== // Tab 1 ==================== -->
+										<!-- ==================== Tab 2 ==================== -->
+										<div class="tab-pane fade" id="tab2default">
+											<div class="col-md-10 col-md-offset-1">
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('purchase_from')}">
+															<label for="purchase_from">Purchase From</label>
+															<input type="text" class="form-control" id="purchase_from" [formControl]="_form.controls['purchase_from']" [ngClass]="{'form-control-danger': !_isValid('purchase_from')}" [(ngModel)]="_model.purchase_from">
+															<div *ngIf="!_formErrors.purchase_from.valid">
+																<span class="help-block help-block-error">{{_formErrors.purchase_from.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('dealer_address')}">
+															<label for="dealer_address">Dealer Address</label>
+															<input type="text" class="form-control" id="dealer_address" [formControl]="_form.controls['dealer_address']" [ngClass]="{'form-control-danger': !_isValid('dealer_address')}" [(ngModel)]="_model.dealer_address">
+															<div *ngIf="!_formErrors.dealer_address.valid">
+																<span class="help-block help-block-error">{{_formErrors.dealer_address.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('dealer_city')}">
+															<label for="dealer_city">Dealer City</label>
+															<select class="form-control" id="dealer_city" [formControl]="_form.controls['dealer_city']" [ngClass]="{'form-control-danger': !_isValid('dealer_city')}" [(ngModel)]="_model.dealer_city">
+																<option *ngFor="let _city of _cities" value="{{_city.Id}}">{{_city.city_name}}</option>
+															</select>
+														</div>
+													</div>
+												</div>
+												<!-- //ROW -->
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('after_sales_service_provided_by')}">
+															<label for="after_sales_service_provided_by">After Sales Services Provideb By</label>
+															<input type="text" class="form-control" id="after_sales_service_provided_by" [formControl]="_form.controls['after_sales_service_provided_by']" [ngClass]="{'form-control-danger': !_isValid('after_sales_service_provided_by')}" [(ngModel)]="_model.after_sales_service_provided_by">
+															<div *ngIf="!_formErrors.after_sales_service_provided_by.valid">
+																<span class="help-block help-block-error">{{_formErrors.after_sales_service_provided_by.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('invoice_no')}">
+															<label for="invoice_no">Invoice No.</label>
+															<input type="text" class="form-control" id="invoice_no" [formControl]="_form.controls['invoice_no']" [ngClass]="{'form-control-danger': !_isValid('invoice_no')}" [(ngModel)]="_model.invoice_no">
+															<div *ngIf="!_formErrors.invoice_no.valid">
+																<span class="help-block help-block-error">{{_formErrors.invoice_no.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('invoice_date')}">
+															<label for="invoice_date">Invoice Date</label>
+															<div class="input-group">
+                                                                <input class="form-control" #datepickerID="bsDatepicker" bsDatepicker placeholder="Select date"  formControlName="invoice_date" [bsConfig]="datepickerConfig" [(ngModel)]="invoice_date" (bsValueChange)="onChangeDate('invoice_date', $event)"/>
+                                                                <span class="input-group-addon">
+                                                                    <a href="javascript:void(0)" (click)="datepickerID.toggle()" [attr.aria-expanded]="datepickerID.isOpen"><i class="fa fa-calendar-check-o"></i></a>
+                                                                </span>
+                                                            </div>
+															<div *ngIf="!_formErrors.invoice_date.valid">
+																<span class="help-block help-block-error">{{_formErrors.invoice_date.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- //ROW -->
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('asset_cost')}">
+															<label for="asset_cost">Asset Cost</label>
+															<input type="text" class="form-control" id="asset_cost" [formControl]="_form.controls['asset_cost']" [ngClass]="{'form-control-danger': !_isValid('asset_cost')}" [(ngModel)]="_model.asset_cost">
+															<div *ngIf="!_formErrors.asset_cost.valid">
+																<span class="help-block help-block-error">{{_formErrors.asset_cost.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('free_services_provided')}">
+															<label for="free_services_provided">Free Services Provided</label><br>
+															<input type="radio" [formControl]="_form.controls['free_services_provided']" [ngClass]="{'form-control-danger': !_isValid('free_services_provided')}" [(ngModel)]="_model.free_services_provided"  name="free_services_provided" [checked]="_model.free_services_provided == 1" value="1">Yes &nbsp;
+															<input type="radio" [formControl]="_form.controls['free_services_provided']" [ngClass]="{'form-control-danger': !_isValid('free_services_provided')}" [(ngModel)]="_model.free_services_provided"  name="free_services_provided" [checked]="_model.free_services_provided == 1" value="0">No
+
+															<div *ngIf="!_formErrors.free_services_provided.valid">
+																<span class="help-block help-block-error">{{_formErrors.free_services_provided.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('no_of_free_services')}">
+															<label for="no_of_free_services">Number of free services.</label>
+															<input type="number" class="form-control" id="no_of_free_services" [formControl]="_form.controls['no_of_free_services']" [ngClass]="{'form-control-danger': !_isValid('no_of_free_services')}" [(ngModel)]="_model.no_of_free_services" min="1" max="3">
+															<div *ngIf="!_formErrors.no_of_free_services.valid">
+																<span class="help-block help-block-error">{{_formErrors.no_of_free_services.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('duplicate_key_at_ho')}">
+															<label for="duplicate_key_at_ho">Duplicate Key at H.O.</label><br>
+															<input type="radio" [formControl]="_form.controls['duplicate_key_at_ho']" [ngClass]="{'form-control-danger': !_isValid('duplicate_key_at_ho')}" [(ngModel)]="_model.duplicate_key_at_ho"  name="duplicate_key_at_ho" [checked]="_model.duplicate_key_at_ho == 1" value="1">Yes &nbsp;
+															<input type="radio" [formControl]="_form.controls['duplicate_key_at_ho']" [ngClass]="{'form-control-danger': !_isValid('duplicate_key_at_ho')}" [(ngModel)]="_model.duplicate_key_at_ho"  name="duplicate_key_at_ho" [checked]="_model.duplicate_key_at_ho == 0" value="0">No
+
+															<div *ngIf="!_formErrors.duplicate_key_at_ho.valid">
+																<span class="help-block help-block-error">{{_formErrors.duplicate_key_at_ho.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- ====================  // Tab 2  ====================-->
+										<!-- ====================   Tab 3  ====================-->
+										<div class="tab-pane fade" id="tab3default">
+											<div class="col-md-10 col-md-offset-1">
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('chasis_serial_no')}">
+															<label for="chasis_serial_no">Chasis Serial No.</label>
+															<input type="text" class="form-control" id="chasis_serial_no" [formControl]="_form.controls['chasis_serial_no']" [ngClass]="{'form-control-danger': !_isValid('chasis_serial_no')}" [(ngModel)]="_model.chasis_serial_no">
+															<div *ngIf="!_formErrors.chasis_serial_no.valid">
+																<span class="help-block help-block-error">{{_formErrors.chasis_serial_no.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('accessories_supplied')}">
+															<label for="accessories_supplied">Assesories Supplied at Purchase</label>
+															<input type="text" class="form-control" id="accessories_supplied" [formControl]="_form.controls['accessories_supplied']" [ngClass]="{'form-control-danger': !_isValid('accessories_supplied')}" [(ngModel)]="_model.accessories_supplied">
+															<div *ngIf="!_formErrors.accessories_supplied.valid">
+																<span class="help-block help-block-error">{{_formErrors.accessories_supplied.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('body_height')}">
+															<label for="body_height">Vehicle Body Height</label>
+															<input type="text" class="form-control" id="body_height" [formControl]="_form.controls['body_height']" [ngClass]="{'form-control-danger': !_isValid('body_height')}" [(ngModel)]="_model.body_height">
+															<div *ngIf="!_formErrors.body_height.valid">
+																<span class="help-block help-block-error">{{_formErrors.body_height.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('chasis_length')}">
+															<label for="chasis_length">Chasis Length</label>
+															<input type="text" class="form-control" id="chasis_length" [formControl]="_form.controls['chasis_length']" [ngClass]="{'form-control-danger': !_isValid('chasis_length')}" [(ngModel)]="_model.chasis_length">
+															<div *ngIf="!_formErrors.chasis_length.valid">
+																<span class="help-block help-block-error">{{_formErrors.chasis_length.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('chasis_color')}">
+															<label for="chasis_color">Chasis Color</label>
+															<input type="text" class="form-control" id="chasis_color" [formControl]="_form.controls['chasis_color']" [ngClass]="{'form-control-danger': !_isValid('chasis_color')}" [(ngModel)]="_model.chasis_color">
+															<div *ngIf="!_formErrors.chasis_color.valid">
+																<span class="help-block help-block-error">{{_formErrors.chasis_color.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('body_color')}">
+															<label for="body_color">Chasis Body Color</label>
+															<input type="text" class="form-control" id="body_color" [formControl]="_form.controls['body_color']" [ngClass]="{'form-control-danger': !_isValid('body_color')}" [(ngModel)]="_model.body_color">
+															<div *ngIf="!_formErrors.body_color.valid">
+																<span class="help-block help-block-error">{{_formErrors.body_color.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- ====================  // Tab 3  ====================-->
+										<!-- ====================   Tab 4  ====================-->
+										<div class="tab-pane fade" id="tab4default">
+											<div class="col-md-10 col-md-offset-1">
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('sale_date')}">
+															<label for="sale_date">Start Date</label>
+															<div class="input-group">
+                                                                <input class="form-control" #datepickerSD="bsDatepicker" bsDatepicker placeholder="Select date"  formControlName="sale_date" [bsConfig]="datepickerConfig" [(ngModel)]="sale_date" (bsValueChange)="onChangeDate('sale_date', $event)"/>
+                                                                <span class="input-group-addon">
+                                                                    <a href="javascript:void(0)" (click)="datepickerSD.toggle()" [attr.aria-expanded]="datepickerSD.isOpen"><i class="fa fa-calendar-check-o"></i></a>
+                                                                </span>
+                                                            </div>
+															<div *ngIf="!_formErrors.sale_date.valid">
+																<span class="help-block help-block-error">{{_formErrors.sale_date.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('sale_price')}">
+															<label for="sale_price">Sale Price</label>
+															<input type="text" class="form-control" id="sale_price" [formControl]="_form.controls['sale_price']" [ngClass]="{'form-control-danger': !_isValid('sale_price')}" [(ngModel)]="_model.sale_price">
+															<div *ngIf="!_formErrors.sale_price.valid">
+																<span class="help-block help-block-error">{{_formErrors.sale_price.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('buyer_company')}">
+															<label for="buyer_company">Buyer Company</label>
+															<input type="text" class="form-control" id="buyer_company" [formControl]="_form.controls['buyer_company']" [ngClass]="{'form-control-danger': !_isValid('buyer_company')}" [(ngModel)]="_model.buyer_company">
+															<div *ngIf="!_formErrors.buyer_company.valid">
+																<span class="help-block help-block-error">{{_formErrors.buyer_company.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- // ROW -->
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('sold_to')}">
+															<label for="sold_to">Sold To</label>
+															<input type="text" class="form-control" id="sold_to" [formControl]="_form.controls['sold_to']" [ngClass]="{'form-control-danger': !_isValid('sold_to')}" [(ngModel)]="_model.sold_to">
+															<div *ngIf="!_formErrors.sold_to.valid">
+																<span class="help-block help-block-error">{{_formErrors.sold_to.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('buyer_address')}">
+															<label for="buyer_address">Buyer Address</label>
+															<input type="text" class="form-control" id="buyer_address" [formControl]="_form.controls['buyer_address']" [ngClass]="{'form-control-danger': !_isValid('buyer_address')}" [(ngModel)]="_model.buyer_address">
+															<div *ngIf="!_formErrors.buyer_address.valid">
+																<span class="help-block help-block-error">{{_formErrors.buyer_address.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('buyer_city')}">
+															<label for="buyer_city">Buyer City</label>
+															<select class="form-control" id="buyer_city" [formControl]="_form.controls['buyer_city']" [ngClass]="{'form-control-danger': !_isValid('buyer_city')}" [(ngModel)]="_model.buyer_city">
+																<option *ngFor="let _city of _cities" value="{{_city.Id}}">{{_city.city_name}}</option>
+															</select>
+														</div>
+													</div>
+												</div>
+												<!-- // ROW -->
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('buyer_phone')}">
+															<label for="buyer_phone">Buyer Phone</label>
+															<input type="text" class="form-control" id="buyer_phone" [formControl]="_form.controls['buyer_phone']" [ngClass]="{'form-control-danger': !_isValid('buyer_phone')}" [(ngModel)]="_model.buyer_phone">
+															<div *ngIf="!_formErrors.buyer_phone.valid">
+																<span class="help-block help-block-error">{{_formErrors.buyer_phone.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('meter_reading_at_sale')}">
+															<label for="meter_reading_at_sale">Old meter Reading at Sale</label>
+															<input type="text" class="form-control" id="meter_reading_at_sale" [formControl]="_form.controls['meter_reading_at_sale']" [ngClass]="{'form-control-danger': !_isValid('meter_reading_at_sale')}" [(ngModel)]="_model.meter_reading_at_sale">
+															<div *ngIf="!_formErrors.meter_reading_at_sale.valid">
+																<span class="help-block help-block-error">{{_formErrors.meter_reading_at_sale.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('sale_comments')}">
+															<label for="sale_comments">Comments</label>
+															<textarea class="form-control" id="sale_comments" [formControl]="_form.controls['sale_comments']" [ngClass]="{'form-control-danger': !_isValid('sale_comments')}" [(ngModel)]="_model.sale_comments"></textarea>
+															<div *ngIf="!_formErrors.sale_comments.valid">
+																<span class="help-block help-block-error">{{_formErrors.sale_comments.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- // ROW -->
+											</div>
+											<!-- //ROW -->
+										</div>
+										<!-- ====================  // Tab 4  ====================-->
+										<!-- ====================  Tab 5  ====================-->
+										<div class="tab-pane fade" id="tab5default">
+											<div class="col-md-10 col-md-offset-1">
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('engine_serial_no')}">
+															<label for="engine_serial_no">Serial No.</label>
+															<input type="text" class="form-control" id="engine_serial_no" [formControl]="_form.controls['engine_serial_no']" [ngClass]="{'form-control-danger': !_isValid('engine_serial_no')}" [(ngModel)]="_model.engine_serial_no">
+															<div *ngIf="!_formErrors.engine_serial_no.valid">
+																<span class="help-block help-block-error">{{_formErrors.engine_serial_no.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('engine_power')}">
+															<label for="engine_power">Power (BHP)</label>
+															<input type="text" class="form-control" id="engine_power" [formControl]="_form.controls['engine_power']" [ngClass]="{'form-control-danger': !_isValid('engine_power')}" [(ngModel)]="_model.engine_power">
+															<div *ngIf="!_formErrors.engine_power.valid">
+																<span class="help-block help-block-error">{{_formErrors.engine_power.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('ignition_key_no')}">
+															<label for="ignition_key_no">Ignition Key No.</label>
+															<input type="text" class="form-control" id="ignition_key_no" [formControl]="_form.controls['ignition_key_no']" [ngClass]="{'form-control-danger': !_isValid('ignition_key_no')}" [(ngModel)]="_model.ignition_key_no">
+															<div *ngIf="!_formErrors.ignition_key_no.valid">
+																<span class="help-block help-block-error">{{_formErrors.ignition_key_no.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- // ROW -->
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('fuel_type')}">
+															<label for="fuel_type">Fuelpe/Grade</label>
+															<input type="text" class="form-control" id="fuel_type" [formControl]="_form.controls['fuel_type']" [ngClass]="{'form-control-danger': !_isValid('fuel_type')}" [(ngModel)]="_model.fuel_type">
+															<div *ngIf="!_formErrors.fuel_type.valid">
+																<span class="help-block help-block-error">{{_formErrors.fuel_type.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('door_key')}">
+															<label for="door_key">Door Key No.</label>
+															<input type="text" class="form-control" id="door_key" [formControl]="_form.controls['door_key']" [ngClass]="{'form-control-danger': !_isValid('door_key')}" [(ngModel)]="_model.door_key">
+															<div *ngIf="!_formErrors.door_key.valid">
+																<span class="help-block help-block-error">{{_formErrors.door_key.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('engine_color')}">
+															<label for="engine_color">Engine Color</label>
+															<input type="text" class="form-control" id="engine_color" [formControl]="_form.controls['engine_color']" [ngClass]="{'form-control-danger': !_isValid('engine_color')}" [(ngModel)]="_model.engine_color">
+															<div *ngIf="!_formErrors.engine_color.valid">
+																<span class="help-block help-block-error">{{_formErrors.engine_color.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- // ROW -->
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('cylinders')}">
+															<label for="cylinders">Cylinders</label>
+															<input type="text" class="form-control" id="cylinders" [formControl]="_form.controls['cylinders']" [ngClass]="{'form-control-danger': !_isValid('cylinders')}" [(ngModel)]="_model.cylinders">
+															<div *ngIf="!_formErrors.cylinders.valid">
+																<span class="help-block help-block-error">{{_formErrors.cylinders.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('engine_interior_color')}">
+															<label for="engine_interior_color">Engine Interior Color</label>
+															<input type="text" class="form-control" id="engine_interior_color" [formControl]="_form.controls['engine_interior_color']" [ngClass]="{'form-control-danger': !_isValid('engine_interior_color')}" [(ngModel)]="_model.engine_interior_color">
+															<div *ngIf="!_formErrors.engine_interior_color.valid">
+																<span class="help-block help-block-error">{{_formErrors.engine_interior_color.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('torque')}">
+															<label for="torque">Torque (lb-ft)</label>
+															<input type="text" class="form-control" id="torque" [formControl]="_form.controls['torque']" [ngClass]="{'form-control-danger': !_isValid('torque')}" [(ngModel)]="_model.torque">
+															<div *ngIf="!_formErrors.torque.valid">
+																<span class="help-block help-block-error">{{_formErrors.torque.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- // ROW -->
+											</div>
+										</div>
+										<!-- ====================  // Tab 5  ====================-->
+										<!-- ====================   Tab 6  ====================-->
+										<div class="tab-pane fade" id="tab6default">
+											<div class="col-md-10 col-md-offset-1">
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('vehicle_pic')}">
+															<label for="vehicle_pic">Vehicle Picture</label>
+															<img src="{{_model.vehicle_pic}}" class="img" alt="" style="width: 150px; height: 150px;">
+															<input type="file" id="media_vehicle_pic"  (change)="onFileChange($event)" #vehiclePicFileInput>
+															<button type="button" class="btn btn-sm btn-default" (click)="clearVehicleFile()">clear file</button>
+															<div *ngIf="!_formErrors.vehicle_pic.valid">
+																<span class="help-block help-block-error">{{_formErrors.vehicle_pic.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('chasis_pic')}">
+															<label for="chasis_pic">Chasis Picture</label>
+															<img src="{{_model.chasis_pic}}" class="img" alt="" style="width: 150px; height: 150px;">
+															<input type="file" id="media_chasis_pic"  (change)="onFileChange($event)" #chasisPicFileInput>
+															<button type="button" class="btn btn-sm btn-default" (click)="clearChasisFile()">clear file</button>
+															<div *ngIf="!_formErrors.chasis_pic.valid">
+																<span class="help-block help-block-error">{{_formErrors.chasis_pic.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('rc')}">
+															<label for="rc">Registration Book (RC)</label>
+															<img src="{{_model.rc}}" class="img" alt="" style="width: 150px; height: 150px;">
+															<input type="file" id="media_rc"  (change)="onFileChange($event)" #rcFileInput>
+															<button type="button" class="btn btn-sm btn-default" (click)="clearRcFile()">clear file</button>
+															<div *ngIf="!_formErrors.rc.valid">
+																<span class="help-block help-block-error">{{_formErrors.rc.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- // ROW -->
+												<!-- ROW -->
+												<div class="row">
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('owner_pan_card')}">
+															<label for="owner_pan_card">Owner Pan Card</label>
+															<img src="{{_model.owner_pan_card}}" class="img" alt="" style="width: 150px; height: 150px;">
+															<input type="file" id="media_owner_pan_card"  (change)="onFileChange($event)" #ownerPanCardFileInput>
+															<button type="button" class="btn btn-sm btn-default" (click)="clearOwnerPanCardFile()">clear file</button>
+															<div *ngIf="!_formErrors.owner_pan_card.valid">
+																<span class="help-block help-block-error">{{_formErrors.owner_pan_card.message}}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-4">
+														<div class="form-group" [ngClass]="{'has-danger': !_isValid('tds_declaration')}">
+															<label for="tds_declaration">TDS Declaration</label>
+															<img src="{{_model.tds_declaration}}" class="img" alt="" style="width: 150px; height: 150px;">
+															<input type="file" id="media_tds_declaration"  (change)="onFileChange($event)" #tdsDeclarationFileInput>
+															<button type="button" class="btn btn-sm btn-default" (click)="clearTdsDeclarationFile()">clear file</button>
+															<div *ngIf="!_formErrors.tds_declaration.valid">
+																<span class="help-block help-block-error">{{_formErrors.tds_declaration.message}}</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- // ROW -->
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- // My Tabs -->
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<button type="submit" class="btn" [disabled]="_submitted == true">Submit</button>
+									<div *ngIf="_submitted" class="spinner"></div>
+								</div>
+								<div *ngIf="_errorMessage" class="col-xs-12 error-block mt-h">
+									<div class="alert alert-danger">{{_errorMessage}}</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- End Panel Body -->
+			</div>
+			<!-- // Primary Box -->
+		</div>
+	</div>
+</section>
